@@ -11,19 +11,14 @@ my_region = 'na1'
 
 # using riotwatcher object to get summoner info
 me = watcher.summoner.by_name(my_region, 'feddachini')
-# print(me)
 
 my_ranked_stats = watcher.league.by_summoner(my_region, me['id'])
-# print(my_ranked_stats)
 
 my_matches = watcher.match.matchlist_by_puuid(my_region, me['puuid'])
 
 # fetch last match detail
 last_match = my_matches[0]
 match_detail = watcher.match.by_id(my_region, last_match)
-
-# print((match_detail.get('info')).get('participants')[0])
-
 
 participants = []
 for row in (match_detail.get('info')).get('participants'):

@@ -9,15 +9,14 @@ my_region = 'na1'
 #                  #
 ####################
 
+# using riotwatcher object to get summoner info
 me = watcher.summoner.by_name(my_region, 'feddachini')
-print(me)
+# print(me)
 
 my_ranked_stats = watcher.league.by_summoner(my_region, me['id'])
-print(my_ranked_stats)
+# print(my_ranked_stats)
 
 my_matches = watcher.match.matchlist_by_puuid(my_region, me['puuid'])
-print("My Matches: ")
-print(my_matches)
 
 # fetch last match detail
 last_match = my_matches[0]
@@ -28,7 +27,8 @@ match_detail = watcher.match.by_id(my_region, last_match)
 
 participants = []
 for row in (match_detail.get('info')).get('participants'):
-    participants_row = {'champion': row['championId'],
+    participants_row = {'summonerName': row['summonerName'],
+                        'champion': row['championId'],
                         # 'spell1Casts': row['spell1Casts'],
                         # 'spell2Casts': row['spell2Casts'],
                         'win': row['win'],
@@ -43,25 +43,22 @@ for row in (match_detail.get('info')).get('participants'):
                         # 'item1': row['item1']
                         }
     participants.append(participants_row)
+
+# Check league's latest version
+latest = watcher.data_dragon.versions_for_region(my_region)['n']['champion']
+
+# Champ static information
+static_champ_list = watcher.data_dragon.champions(latest, False, 'en_US')
+
+# Champ static list-data to dict for look up
+champ_dict = {}
+for key in static_champ_list['data']:
+    row = static_champ_list['data'][key]
+    champ_dict[row['key']] = row['id']
+
+# Change ChampID to ChampName in table
+for row in participants:
+    row['champion'] = champ_dict[str(row['champion'])]
+
 df = pd.DataFrame(participants)
 print(df)
-
-#
-# # check league's latest version
-# latest = watcher.data_dragon.versions_for_region(my_region)['n']['champion']
-# # Lets get some champions static information
-# static_champ_list = watcher.data_dragon.champions(latest, False, 'en_US')
-#
-# # champ static list data to dict for looking up
-# champ_dict = {}
-# for key in static_champ_list['data']:
-#     row = static_champ_list['data'][key]
-#     champ_dict[row['key']] = row['id']
-# for row in participants:
-#     print(str(row['champion']) + ' ' + champ_dict[str(row['champion'])])
-#     row['championName'] = champ_dict[str(row['champion'])]
-#
-# # print dataframe
-# df = pd.DataFrame(participants)
-# df
-#

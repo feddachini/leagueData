@@ -1,6 +1,8 @@
 from riotwatcher import LolWatcher, ApiError
 import pandas as pd
 
+LIGHT_BLUE = "\033[1;34m"  # ANSI code
+
 ####################
 # global variables #
 api_key = 'RGAPI-3983c4de-0d2b-4da9-842a-0c40e60d7d11'
@@ -56,4 +58,6 @@ for row in participants:
     row['champion'] = champ_dict[str(row['champion'])]
 
 df = pd.DataFrame(participants)
+
+print(LIGHT_BLUE + "feddachini's latest game")
 print(df)
